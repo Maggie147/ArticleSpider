@@ -25,7 +25,8 @@ class ForcepointSpider(CrawlSpider):
     ]
 
     def parse_item(self, response):
-        if not response.xpath('//div[@class="entry"]/h3[@class="entry-header"]/a/@href'):
+        print response.body
+        if not response.xpath('//div[@class="entry"]/h3[@class="entry-header"]/a[@href]'):
             return
         for blog_url in response.xpath('//div[@class="entry"]/h3[@class="entry-header"]/a/@href').extract():
             yield scrapy.Request(url=blog_url, callback=self.parse_content)
