@@ -19,7 +19,7 @@ class ArticlecollectItem(scrapy.Item):
     spider_time = scrapy.Field()
     publish_time = scrapy.Field()
     publisher_href = scrapy.Field()
-    prublisher_id = scrapy.Field()
+    publisher_id = scrapy.Field()
     url = scrapy.Field()
     article_id = scrapy.Field()
     img_urls = scrapy.Field()

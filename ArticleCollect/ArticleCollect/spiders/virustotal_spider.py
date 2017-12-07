@@ -48,7 +48,7 @@ class ForcepointSpider(CrawlSpider):
         item['article_id'] = None
         item['publisher_href'] = None
         item['img_urls'] = None
-        item['prublisher_id'] = None
+        item['publisher_id'] = None
 
         html = response.xpath('/html').extract_first()
         item['html'] = html if html else None
