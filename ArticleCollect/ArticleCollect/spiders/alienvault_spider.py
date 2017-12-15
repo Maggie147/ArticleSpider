@@ -26,15 +26,17 @@ class ForcepointSpider(CrawlSpider):
 
 
     def parse_item(self, response):
-        if not response.xpath('//div[@class="blog-summary-listing"]//td[@class="blog-title"]//a[@href]'):
+        if not response.xpath('//div[@class="grid-item"]/div[@class="grid-content"]/h3/a[@href]'):
             return
-        for blog_url in response.xpath('//div[@class="blog-summary-listing"]//td[@class="blog-title"]//a/@href').extract():
+        for blog_url in response.xpath('//div[@class="grid-item"]/div[@class="grid-content"]/h3/a/@href').extract():
             domians = 'https://www.alienvault.com'
             blog_url = domians + blog_url if 'http' not in blog_url else blog_url
+            # print "^"*20, "blog_url:", blog_url
             yield scrapy.Request(url=blog_url, headers=response.headers, dont_filter=True, callback=self.parse_content)
 
 
     def parse_content(self, response):
+        print "aaaa"*30
         item = ArticlecollectItem()
         item['url'] = response.url
         item['spider_time'] = time.time()
