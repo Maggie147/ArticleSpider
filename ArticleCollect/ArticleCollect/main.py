@@ -11,4 +11,6 @@ from scrapy.cmdline import execute
 # execute('scrapy crawl securityaffairs'.split(' '))
 # execute('scrapy crawl pwcCoUk'.split(' '))
 # execute('scrapy crawl symantec'.split(' '))
-execute('scrapy crawl citizenlab'.split(' '))
+# execute('scrapy crawl citizenlab'.split(' '))
+# execute('scrapy crawl myonlinesecurity'.split(' '))
+execute('scrapy crawl securityintelligence'.split(' '))
