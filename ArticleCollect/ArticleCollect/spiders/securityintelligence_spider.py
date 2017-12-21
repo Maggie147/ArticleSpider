@@ -76,14 +76,13 @@ class ForcepointSpider(scrapy.Spider):
         title = response.xpath('//div[@class="single-header"]//h1/text()').extract_first()
         item['title'] = title.encode('utf-8') if title else response.meta['blog_tile'].encode('utf-8')
 
-
-        title = response.xpath('//div[@class="single-header"]//h1/text()').extract_first()
-        item['title'] = title.encode('utf-8') if title else response.meta['blog_tile'].encode('utf-8')
-
-        publish_timeTmp = response.meta['blog_time'] if response.meta['blog_time'] else None
+        publish_timeTmp = response.xpath('//div[@class="post-meta"]/span[@class="date-time"]/text()').extract_first()
         if publish_timeTmp:
             publish_time = format_date(publish_timeTmp)
             item['publish_time'] = publish_time if publish_time else None
+
+        publisher_tmp = response.xpath('//div[@class="post-meta"]/span[@class="author"]/a/text()').extract_first()
+        item['title'] = title.encode('utf-8') if title else response.meta['blog_tile'].encode('utf-8')
 
         content = response.xpath('//div[@class="text-component"]').extract_first()
         item['content'] = content if content else None
@@ -94,8 +93,8 @@ class ForcepointSpider(scrapy.Spider):
 def format_date(value):
     if not value:
         return None
-    try:
-        timesp = time.strptime(value, "%d/%m/%y")
+    try:                            #July 8, 2016
+        timesp = time.strptime(value, "%B %d, %Y")
         timesf = time.strftime("%Y-%m-%d", timesp)
         return timesf
     except:
