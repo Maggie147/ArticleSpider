@@ -82,9 +82,12 @@ class ForcepointSpider(scrapy.Spider):
             item['publish_time'] = publish_time if publish_time else None
 
         publisher_tmp = response.xpath('//div[@class="post-meta"]/span[@class="author"]/a/text()').extract_first()
-        item['title'] = title.encode('utf-8') if title else response.meta['blog_tile'].encode('utf-8')
+        item['publisher'] = publisher_tmp.encode('utf-8') if publisher_tmp else response.meta['blog_author'].encode('utf-8')
 
-        content = response.xpath('//div[@class="text-component"]').extract_first()
+        publisher_href = response.xpath('//div[@class="post-meta"]/span[@class="author"]/a[@href]/@href').extract_first()
+        item['publisher_href'] = publisher_href.encode('utf-8') if publisher_href else None
+
+        content = response.xpath('//div[@class="body"]').extract_first()
         item['content'] = content if content else None
 
         yield item
