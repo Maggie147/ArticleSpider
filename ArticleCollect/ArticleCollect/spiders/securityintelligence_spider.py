@@ -12,6 +12,7 @@ from scrapy.linkextractors import LinkExtractor
 # from scrapy.spiders import CrawlSpider, Rule
 import time
 import re
+import pprint
 
 class ForcepointSpider(scrapy.Spider):
     name = 'securityintelligence'
@@ -19,8 +20,12 @@ class ForcepointSpider(scrapy.Spider):
 
     start_urls = ["https://securityintelligence.com/category/x-force/"]
 
+    offset = 0
+
     def parse(self, response):
-        if not response.xpath('//article[@id]//div[@class="content col-lg-9 col-md-9 col-sm-12 col-xs-12"]'):
+        if not response.xpath('//article[@id]'):
+            print "!!!!"*30, "no next page!!"
+            print response.body
             return
 
         for blog in response.xpath('//article[@id]//div[@class="content col-lg-9 col-md-9 col-sm-12 col-xs-12"]'):
@@ -34,26 +39,16 @@ class ForcepointSpider(scrapy.Spider):
             meta={'blog_time':blog_time, 'blog_tile':blog_tile}
             yield scrapy.Request(url=blog_url, headers=response.headers, dont_filter=True, callback=self.parse_content, meta=meta)
 
+        data_offset = 8
+        self.offset += int(data_offset)
+        format_date = {'action': u'ajax_load_more', 'count': u'8', 'catid': u'97', 'offset':str(self.offset)}
+        print "***"*20
+        print "!!!"*20, self.offset
 
-        if not response.xpath('//div[@class="load-more"]'):
-            print "!!!!"*30, "no next page!!"
-            return
+        page_url = 'https://securityintelligence.com/wp-admin/admin-ajax.php'
 
-        load_more = response.xpath('//div[@class="load-more"]/button[@class="load"]')
-        data_catid = load_more.xpath('./@data-catid').extract_first()
-        data_count = load_more.xpath('./@data-count').extract_first()
-        data_offset = load_more.xpath('./@data-offset').extract_first()
-        data_action = load_more.xpath('./@data-action').extract_first()
+        yield scrapy.FormRequest(url=page_url, formdata =format_date, callback=self.parse)
 
-        offset = 0
-        if data_offset:
-            print data_offset
-            offset += int(data_offset)
-            page_url = 'https://securityintelligence.com/wp-admin/admin-ajax.php'
-            format_date = {'catid':data_catid, 'action':data_action, 'count':data_count, 'offset':offset}
-            # print  page_url
-            # yield scrapy.Request(url=page_url, headers=response.headers, dont_filter=True, callback=self.parse)
-            yield scrapy.FormRequest(url=page_url, headers=response.headers, formdata =format_date, callback=self.parse)
 
 
     def parse_content(self, response):
