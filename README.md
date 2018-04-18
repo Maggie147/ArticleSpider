@@ -52,4 +52,5 @@
 * url: "文章的url",
 * article_id: "文章的id",
 * img_urls: "文章中图片的url链接"
+
 注：无法获取该字段填None, 相关数据统一采用utf-8编码
